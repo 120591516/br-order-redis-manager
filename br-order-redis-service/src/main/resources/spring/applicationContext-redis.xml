@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p" xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd
+	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.2.xsd">
+
+	<context:component-scan base-package="br.order.redis"></context:component-scan>
+
+	<bean id="jedisPool" class="redis.clients.jedis.JedisPool">
+		<constructor-arg name="host" value="${redis.host}" />
+		<constructor-arg name="port" value="${redis.port}" />
+	</bean>
+
+	<!-- <bean id="poolConfig" class="redis.clients.jedis.JedisPoolConfig"> <property name="maxIdle" value="${redis.maxIdle}" /> <property name="maxActive" value="${redis.maxActive}" /> <property name="maxWait" value="${redis.maxWait}" /> <property name="testOnBorrow" value="${redis.testOnBorrow}" /> </bean> -->
+
+	<!-- jedis客户端链接工厂 -->
+	<!-- <bean id="connectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory" p:host-name="${redis.host}" p:port="${redis.port}" p:password="${redis.pass}" p:pool-config-ref="poolConfig"/> -->
+
+
+	<!-- redisTmpplate模版 -->
+	<!-- <bean id="redisTemplate" class="org.springframework.data.redis.core.StringRedisTemplate"> <property name="connectionFactory" ref="connectionFactory" /> </bean> -->
+
+	<!-- 对内调用 -->
+	
+	<bean id="RedisInnerService" class="br.order.redis.impl.redis.RedisServiceImpl" />
+	
+	<!-- 初始化Redis -->
+	<bean id="initRedisService" class="br.order.redis.impl.redis.InitRedisServiceImpl" parent="RedisInnerService">
+		<property name="redisService" ref="RedisInnerService" />
+	</bean>
+	
+	<bean id="orgExamItemRedis" class="br.order.redis.impl.examitem.OrgExamItemRedisImpl" parent="RedisInnerService">
+		<property name="redisService" ref="RedisInnerService" />
+	</bean>
+	<bean id="orgExamItemValueRedis" class="br.order.redis.impl.examitemvalue.OrgExamItemValueRedisImpl" parent="RedisInnerService">
+		<property name="redisService" ref="RedisInnerService" />
+	</bean>
+	<!--体检机构  -->
+	<bean id="orgRedis" class="br.order.redis.impl.org.OrgRedisImpl" parent="RedisInnerService">
+		<property name="redisService" ref="RedisInnerService" />
+	</bean>
+	<!--体检机构等级  -->
+	<bean id="orgLevelRedis" class="br.order.redis.impl.org.OrgLevelRedisImpl" parent="RedisInnerService">
+		<property name="redisService" ref="RedisInnerService" />
+	</bean>
+	<!-- 体检机构联系人 -->
+	<bean id="orgConnRedis" class="br.order.redis.impl.org.OrgConnRedisImpl" parent="RedisInnerService">
+		<property name="redisService" ref="RedisInnerService" />
+	</bean>
+	<!-- 体检机构合作意向 -->
+	<bean id="orgCooperationRedis" class="br.order.redis.impl.org.OrgCooperationRedisImpl" parent="RedisInnerService">
+		<property name="redisService" ref="RedisInnerService" />
+	</bean>
+	<!-- 体检机构体检信息 -->
+	<bean id="orgIncomeRedis" class="br.order.redis.impl.org.OrgIncomeRedisImpl" parent="RedisInnerService">
+		<property name="redisService" ref="RedisInnerService" />
+	</bean>
+	<!-- 体检机构投资人 -->
+	<bean id="orgInvestRedis" class="br.order.redis.impl.org.OrgInvestRedisImpl" parent="RedisInnerService">
+		<property name="redisService" ref="RedisInnerService" />
+	</bean>
+	<!-- 体检机构销售信息 -->
+	<bean id="orgSaleRedis" class="br.order.redis.impl.org.OrgSaleRedisImpl" parent="RedisInnerService">
+		<property name="redisService" ref="RedisInnerService" />
+	</bean>
+	<!-- 体检机构软件信息 -->
+	<bean id="orgSoftRedis" class="br.order.redis.impl.org.OrgSoftRedisImpl" parent="RedisInnerService">
+		<property name="redisService" ref="RedisInnerService" />
+	</bean>
+	<!-- 体检机构拜访 -->
+	<bean id="orgVisitRedis" class="br.order.redis.impl.org.OrgVisitRedisImpl" parent="RedisInnerService">
+		<property name="redisService" ref="RedisInnerService" />
+	</bean>
+	<!-- 门店 -->
+	<bean id="orgBranchRedis" class="br.order.redis.impl.branch.OrgBranchRedisImpl" parent="RedisInnerService">
+		<property name="redisService" ref="RedisInnerService" />
+	</bean>
+	<!-- 门店图片 -->
+	<bean id="orgBranchImgRedis" class="br.order.redis.impl.branch.OrgBranchImgRedisImpl" parent="RedisInnerService">
+		<property name="redisService" ref="RedisInnerService" />
+	</bean>
+	<!-- 门店休息日 -->
+	<bean id="orgBranchRestRedis" class="br.order.redis.impl.branch.OrgBranchRestRedisImpl" parent="RedisInnerService">
+		<property name="redisService" ref="RedisInnerService" />
+	</bean>
+	<!-- 门店科室 -->
+	<bean id="orgDeptRedis" class="br.order.redis.impl.dept.OrgDeptRedisImpl" parent="RedisInnerService">
+		<property name="redisService" ref="RedisInnerService" />
+	</bean>
+	<!-- 医生 -->
+	<bean id="orgUserRedis" class="br.order.redis.impl.user.OrgUserRedisImpl" parent="RedisInnerService">
+		<property name="redisService" ref="RedisInnerService" />
+	</bean>
+	<!-- 医生绑定检查项 -->
+	<bean id="orgExamItemUserRedis" class="br.order.redis.impl.examitem.OrgExamItemUserRedisImpl" parent="RedisInnerService">
+		<property name="redisService" ref="RedisInnerService" />
+	</bean>
+	<!-- 体检机构网站 -->
+	<bean id="orgWebRedis" class="br.order.redis.impl.org.OrgWebRedisImpl" parent="RedisInnerService">
+		<property name="redisService" ref="RedisInnerService" />
+	</bean>
+	<!--字典表  -->
+	<!-- 省市区字典表 -->
+	<bean id="dictAreaRedis" class="br.order.redis.impl.dict.DictAreaRedisImpl" parent="RedisInnerService">
+		<property name="redisService" ref="RedisInnerService" />
+	</bean>
+	<!--国家字典表  -->
+	<bean id="dictCountryRedis" class="br.order.redis.impl.dict.DictCountryRedisImpl" parent="RedisInnerService">
+		<property name="redisService" ref="RedisInnerService" />
+	</bean>
+	<!--年龄分组字典表  -->
+	<bean id="dictagegroupRedis" class="br.order.redis.impl.dict.DictagegroupRedisImpl" parent="RedisInnerService">
+		<property name="redisService" ref="RedisInnerService" />
+	</bean>
+	<!--年龄单位字典表  -->
+	<bean id="dictageunitRedis" class="br.order.redis.impl.dict.DictageunitRedisImpl" parent="RedisInnerService">
+		<property name="redisService" ref="RedisInnerService" />
+	</bean>
+	<!--血型字典表  -->
+	<bean id="dictbloodtypeRedis" class="br.order.redis.impl.dict.DictbloodtypeRedisImpl" parent="RedisInnerService">
+		<property name="redisService" ref="RedisInnerService" />
+	</bean>
+	<!--科室类型  -->
+	<bean id="dictDeptTypeRedis" class="br.order.redis.impl.dict.DictDeptTypeRedisImpl" parent="RedisInnerService">
+		<property name="redisService" ref="RedisInnerService" />
+	</bean>
+	<!--教育程度  -->
+	<bean id="dicteducationRedis" class="br.order.redis.impl.dict.DicteducationRedisImpl" parent="RedisInnerService">
+		<property name="redisService" ref="RedisInnerService" />
+	</bean>
+	<!--套餐类型  -->
+	<bean id="dictExamSuiteTypeRedis" class="br.order.redis.impl.dict.DictExamSuiteTypeRedisImpl" parent="RedisInnerService">
+		<property name="redisService" ref="RedisInnerService" />
+	</bean>
+	<!--高发疾病  -->
+	<bean id="dictHighIncidenceDiseaseRedis" class="br.order.redis.impl.dict.DictHighIncidenceDiseaseRedisImpl" parent="RedisInnerService">
+		<property name="redisService" ref="RedisInnerService" />
+	</bean>
+	<!--身份表  -->
+	<bean id="dictidentityRedis" class="br.order.redis.impl.dict.DictidentityRedisImpl" parent="RedisInnerService">
+		<property name="redisService" ref="RedisInnerService" />
+	</bean>
+	<!--图片表  -->
+	<bean id="dictImgRedis" class="br.order.redis.impl.dict.DictImgRedisImpl" parent="RedisInnerService">
+		<property name="redisService" ref="RedisInnerService" />
+	</bean>
+	<!--通知方式字典  -->
+	<bean id="dictinformwayRedis" class="br.order.redis.impl.dict.DictinformwayRedisImpl" parent="RedisInnerService">
+		<property name="redisService" ref="RedisInnerService" />
+	</bean>
+	<!--工作类型字典  -->
+	<bean id="dictjobclassRedis" class="br.order.redis.impl.dict.DictjobclassRedisImpl" parent="RedisInnerService">
+		<property name="redisService" ref="RedisInnerService" />
+	</bean>
+	<!--婚姻字典  -->
+	<bean id="dictmarriageRedis" class="br.order.redis.impl.dict.DictmarriageRedisImpl" parent="RedisInnerService">
+		<property name="redisService" ref="RedisInnerService" />
+	</bean>
+	<!--民族字典  -->
+	<bean id="dictNationRedis" class="br.order.redis.impl.dict.DictNationRedisImpl" parent="RedisInnerService">
+		<property name="redisService" ref="RedisInnerService" />
+	</bean>
+	<!--职业字典  -->
+	<bean id="dictoccupationRedis" class="br.order.redis.impl.dict.DictoccupationRedisImpl" parent="RedisInnerService">
+		<property name="redisService" ref="RedisInnerService" />
+	</bean>
+	<!--支付方式字典  -->
+	<bean id="dictpaywayRedis" class="br.order.redis.impl.dict.DictpaywayRedisImpl" parent="RedisInnerService">
+		<property name="redisService" ref="RedisInnerService" />
+	</bean>
+	<!--发票类型  -->
+	<bean id="dictreceipttypeRedis" class="br.order.redis.impl.dict.DictreceipttypeRedisImpl" parent="RedisInnerService">
+		<property name="redisService" ref="RedisInnerService" />
+	</bean>
+	<!--总检科室  -->
+	<bean id="dictsectionRedis" class="br.order.redis.impl.dict.DictsectionRedisImpl" parent="RedisInnerService">
+		<property name="redisService" ref="RedisInnerService" />
+	</bean>
+	<!--性别  -->
+	<bean id="dictsexRedis" class="br.order.redis.impl.dict.DictsexRedisImpl" parent="RedisInnerService">
+		<property name="redisService" ref="RedisInnerService" />
+	</bean>
+	<!--收费项  -->
+	<bean id="orgExamFeeItemRedis" class="br.order.redis.impl.examfeeitem.OrgExamFeeItemRedisImpl" parent="RedisInnerService">
+		<property name="redisService" ref="RedisInnerService" />
+	</bean>
+	<!--检查项类型  -->
+	<bean id="orgExamItemTypeRedis" class="br.order.redis.impl.examitem.OrgExamItemTypeRedisImpl" parent="RedisInnerService">
+		<property name="redisService" ref="RedisInnerService" />
+	</bean>
+	<!--门店绑定套餐  -->
+	<bean id="orgBranchSuiteRedis" class="br.order.redis.impl.suite.OrgBranchSuiteRedisImpl" parent="RedisInnerService">
+		<property name="redisService" ref="RedisInnerService" />
+	</bean>
+
+	<!--套餐绑定收费项  -->
+	<bean id="orgExamFeeItemSuiteRedis" class="br.order.redis.impl.suite.OrgExamFeeItemSuiteRedisImpl" parent="RedisInnerService">
+		<property name="redisService" ref="RedisInnerService" />
+	</bean>
+
+	<!--结论词redis缓存  -->
+	<bean id="dictConclusionRedis" class="br.order.redis.impl.dict.DictConclusionRedisImpl" parent="RedisInnerService">
+		<property name="redisService" ref="RedisInnerService" />
+	</bean>
+	<!--套餐redis缓存  -->
+	<bean id="orgExamSuiteRedis" class="br.order.redis.impl.suite.OrgExamSuiteRedisImpl" parent="RedisInnerService">
+		<property name="redisService" ref="RedisInnerService" />
+	</bean>
+	<!--套餐类型redis缓存  -->
+	<bean id="orgExamSuiteTypeRedis" class="br.order.redis.impl.suite.OrgExamSuiteTypeRedisImpl" parent="RedisInnerService">
+		<property name="redisService" ref="RedisInnerService" />
+	</bean>
+	<!--套餐高发疾病 -->
+	<bean id="orgExamSuiteHidRedis" class="br.order.redis.impl.suite.OrgExamSuiteHidRedisImpl" parent="RedisInnerService">
+		<property name="redisService" ref="RedisInnerService" />
+	</bean>
+	
+	<!--套餐图片  -->
+	<bean id="orgExamSuiteImgRedis" class="br.order.redis.impl.suite.OrgExamSuiteImgRedisImpl" parent="RedisInnerService">
+		<property name="redisService" ref="RedisInnerService" />
+	</bean>
+	<!--收费项绑定检查项医生表缓存  -->
+	<bean id="orgExamFeeItemDetailRedis" class="br.order.redis.impl.examfeeitem.OrgExamFeeItemDetailRedisImpl" parent="RedisInnerService">
+		<property name="redisService" ref="RedisInnerService" />
+	</bean>
+	<!-- 结论词科室类型 -->
+	<bean id="dictConclusionDeptTypeRedis" class="br.order.redis.impl.dict.DictConclusionDeptTypeRedisImpl" parent="RedisInnerService">
+		<property name="redisService" ref="RedisInnerService" />
+	</bean>
+	<!-- 结论词分组  -->
+	<bean id="dictconclusionGroupRedis" class="br.order.redis.impl.dict.DictconclusionGroupRedisImpl" parent="RedisInnerService">
+		<property name="redisService" ref="RedisInnerService" />
+	</bean>
+	<!-- 结论词结果分类  -->
+	<bean id="dictConclusionResultClassRedis" class="br.order.redis.impl.dict.DictConclusionResultClassRedisImpl" parent="RedisInnerService">
+		<property name="redisService" ref="RedisInnerService" />
+	</bean>
+	<!-- 人际关系字典表  -->
+	<bean id="dictRelationshipRedis" class="br.order.redis.impl.dict.DictRelationshipRedisImpl" parent="RedisInnerService">
+		<property name="redisService" ref="RedisInnerService" />
+	</bean>
+	<!-- 测试环境 -->
+	<beans profile="test">
+		<context:property-placeholder order="1" location="classpath:properties/redis-test.properties" ignore-unresolvable="true" />
+		<context:property-placeholder order="1" location="classpath:properties/resource-test.properties" ignore-unresolvable="true" />
+		<bean id="log4jInitialization" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+			<property name="targetClass" value="org.springframework.util.Log4jConfigurer" />
+			<property name="targetMethod" value="initLogging" />
+			<property name="arguments">
+				<list>
+					<value>classpath:properties/log4j-test.properties</value>
+				</list>
+			</property>
+		</bean>
+	</beans>
+
+	<!-- 生产环境 -->
+	<beans profile="production">
+		<context:property-placeholder order="1" location="classpath:properties/redis-production.properties" ignore-unresolvable="true" />
+		<context:property-placeholder order="1" location="classpath:properties/resource-production.properties" ignore-unresolvable="true" />
+		<bean id="log4jInitialization" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+			<property name="targetClass" value="org.springframework.util.Log4jConfigurer" />
+			<property name="targetMethod" value="initLogging" />
+			<property name="arguments">
+				<list>
+					<value>classpath:properties/log4j-production.properties</value>
+				</list>
+			</property>
+		</bean>
+	</beans>
+
+</beans>

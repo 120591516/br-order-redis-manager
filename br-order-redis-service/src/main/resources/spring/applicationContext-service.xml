@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:dubbo="http://code.alibabatech.com/schema/dubbo" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd
+	http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd
+	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.2.xsd">
+
+	<context:component-scan base-package="br.order.redis"></context:component-scan>
+
+	<!-- 使用dubbo发布服务 -->
+	<!-- 提供方应用信息，用于计算依赖关系 -->
+	<dubbo:application name="br-order-redis-manager-service" />
+	<dubbo:registry protocol="zookeeper" address="${zookeeper.address}" />
+	<!-- 用dubbo协议在20880端口暴露服务 -->
+	<dubbo:protocol name="dubbo"  port="20889" />
+	
+	<!-- 对外发布 -->
+	<!-- 緩存 -->
+	<dubbo:service interface="br.order.redis.redis.RedisService" ref="redisServiceImpl" timeout="300000"/>
+	<!-- 体检项 -->
+	<dubbo:service interface="br.order.redis.examitem.OrgExamItemRedis" ref="orgExamItemRedisImpl" timeout="300000"/>
+	
+	<dubbo:reference interface="br.crm.service.examitem.OrgExamItemService" check="false" id="orgExamItemService"/>
+	<!-- 体征词 -->
+	<dubbo:service interface="br.order.redis.examitemvalue.OrgExamItemValueRedis" ref="orgExamItemValueRedisImpl" timeout="300000"/>
+	
+	<dubbo:reference interface="br.crm.service.examitemvalue.OrgExamItemValueService" check="false" id="orgExamItemValueService"/>
+	
+	<!--体检机构缓存 -->
+	<dubbo:service interface="br.order.redis.org.OrgRedis" ref="orgRedisImpl" timeout="300000"/>
+	
+	<dubbo:reference interface="br.crm.service.org.OrganizationService" check="false" id="organizationService"/>
+	<!--体检机构等级缓存 -->
+	<dubbo:service interface="br.order.redis.org.OrgLevelRedis" ref="orgLevelRedisImpl" timeout="300000"/>
+	
+	<dubbo:reference interface="br.crm.service.org.OrgLevelService" check="false" id="orgLevelService"/>
+	<!--体检机构联系人 -->
+	<dubbo:service interface="br.order.redis.org.OrgConnRedis" ref="orgConnRedisImpl" timeout="300000"/>
+	
+	<dubbo:reference interface="br.crm.service.org.OrgConnService" check="false" id="orgConnService"/>
+	<!--体检机构合作意向 -->
+	<dubbo:service interface="br.order.redis.org.OrgCooperationRedis" ref="orgCooperationRedisImpl" timeout="300000"/>
+	
+	<dubbo:reference interface="br.crm.service.org.OrgCooperationService" check="false" id="orgCooperationService"/>
+	<!--体检机构体检信息 -->
+	<dubbo:service interface="br.order.redis.org.OrgIncomeRedis" ref="orgIncomeRedisImpl" timeout="300000"/>
+	
+	<dubbo:reference interface="br.crm.service.org.OrgIncomeService" check="false" id="orgIncomeService"/>
+	<!--体检机构投资人 -->
+	<dubbo:service interface="br.order.redis.org.OrgInvestRedis" ref="orgInvestRedisImpl" timeout="300000"/>
+	
+	<dubbo:reference interface="br.crm.service.org.OrgInvestService" check="false" id="orgInvestService"/>
+	<!--体检机构销售信息 -->
+	<dubbo:service interface="br.order.redis.org.OrgSaleRedis" ref="orgSaleRedisImpl" timeout="300000"/>
+	
+	<dubbo:reference interface="br.crm.service.org.OrgSaleService" check="false" id="orgSaleService"/>
+	<!--体检机构软件信息-->
+	<dubbo:service interface="br.order.redis.org.OrgSoftRedis" ref="orgSoftRedisImpl" timeout="300000"/>
+	
+	<dubbo:reference interface="br.crm.service.org.OrgSoftService" check="false" id="orgSoftService"/>
+	<!--体检机构拜访信息-->
+	<dubbo:service interface="br.order.redis.org.OrgVisitRedis" ref="orgVisitRedisImpl" timeout="300000"/>
+	
+	<dubbo:reference interface="br.crm.service.org.OrgVisitService" check="false" id="orgVisitService"/>
+	<!--体检机构网站-->
+	<dubbo:service interface="br.order.redis.org.OrgWebRedis" ref="orgWebRedisImpl" timeout="300000"/>
+	
+	<dubbo:reference interface="br.crm.service.org.OrgWebService" check="false" id="orgWebService"/>
+	<!--字典表 -->
+	<!--国家字典表 -->
+	<dubbo:service interface="br.order.redis.dict.DictCountryRedis" ref="dictCountryRedisImpl" timeout="300000"/>
+	
+	<dubbo:reference interface="br.crm.service.dict.CountryManagerService" check="false" id="countryManagerService"/>
+	<!-- 省市区字典表 -->
+	<dubbo:service interface="br.order.redis.dict.DictAreaRedis" ref="dictAreaRedisImpl" timeout="300000"/>
+	
+	<dubbo:reference interface="br.crm.service.dict.DictAreaService" check="false" id="dictAreaService"/>
+	<!-- 年龄分组字典表 -->
+	<dubbo:service interface="br.order.redis.dict.DictagegroupRedis" ref="dictagegroupRedisImpl" timeout="300000"/>
+	
+	<dubbo:reference interface="br.crm.service.dict.DictagegroupService" check="false" id="dictagegroupService"/>
+	<!-- 年龄单位字典表 -->
+	<dubbo:service interface="br.order.redis.dict.DictageunitRedis" ref="dictageunitRedisImpl" timeout="300000"/>
+	
+	<dubbo:reference interface="br.crm.service.dict.DictAgeUnitService" check="false" id="dictAgeUnitService"/>
+	<!-- 血型字典表 -->
+	<dubbo:service interface="br.order.redis.dict.DictbloodtypeRedis" ref="dictbloodtypeRedisImpl" timeout="300000"/>
+	
+	<dubbo:reference interface="br.crm.service.dict.DictBloodTypeService" check="false" id="dictBloodTypeService"/>
+	<!-- 科室类型 -->
+	<dubbo:service interface="br.order.redis.dict.DictDeptTypeRedis" ref="dictDeptTypeRedisImpl" timeout="300000"/>
+	
+	<dubbo:reference interface="br.crm.service.dict.DictDeptTypeService" check="false" id="dictDeptTypeService"/>
+	<!-- 教育程度 -->
+	<dubbo:service interface="br.order.redis.dict.DicteducationRedis" ref="dicteducationRedisImpl" timeout="300000"/>
+	
+	<dubbo:reference interface="br.crm.service.dict.DictEducationService" check="false" id="dictEducationService"/>
+	<!-- 套餐类型 -->
+	<dubbo:service interface="br.order.redis.dict.DictExamSuiteTypeRedis" ref="dictExamSuiteTypeRedisImpl" timeout="300000"/>
+	
+	<dubbo:reference interface="br.crm.service.dict.DictExamSuiteTypeService" check="false" id="dictExamSuiteTypeService"/>
+	<!-- 高发疾病 -->
+	<dubbo:service interface="br.order.redis.dict.DictHighIncidenceDiseaseRedis" ref="dictHighIncidenceDiseaseRedisImpl" timeout="300000"/>
+	
+	<dubbo:reference interface="br.crm.service.dict.DictHighIncidenceDiseaseService" check="false" id="dictHighIncidenceDiseaseService"/>
+	<!-- 身份表 -->
+	<dubbo:service interface="br.order.redis.dict.DictidentityRedis" ref="dictidentityRedisImpl" timeout="300000"/>
+	
+	<dubbo:reference interface="br.crm.service.dict.DictidentityService" check="false" id="dictidentityService"/>
+	<!-- 图片表-->
+	<dubbo:service interface="br.order.redis.dict.DictImgRedis" ref="dictImgRedisImpl" timeout="300000"/>
+	
+	<dubbo:reference interface="br.crm.service.dict.DictImgService" check="false" id="dictImgService"/>
+	<!-- 通知方式-->
+	<dubbo:service interface="br.order.redis.dict.DictinformwayRedis" ref="dictinformwayRedisImpl" timeout="300000"/>
+	
+	<dubbo:reference interface="br.crm.service.dict.DictinFormWayService" check="false" id="dictinFormWayService"/>
+	<!-- 工作类型-->
+	<dubbo:service interface="br.order.redis.dict.DictjobclassRedis" ref="dictjobclassRedisImpl" timeout="300000"/>
+	
+	<dubbo:reference interface="br.crm.service.dict.DictJobClassService" check="false" id="dictJobClassService"/>
+	<!-- 婚姻类型-->
+	<dubbo:service interface="br.order.redis.dict.DictmarriageRedis" ref="dictmarriageRedisImpl" timeout="300000"/>
+	
+	<dubbo:reference interface="br.crm.service.dict.DictMarriageService" check="false" id="dictMarriageService"/>
+	<!-- 民族类型-->
+	<dubbo:service interface="br.order.redis.dict.DictNationRedis" ref="dictNationRedisImpl" timeout="300000"/>
+	
+	<dubbo:reference interface="br.crm.service.dict.DictNationService" check="false" id="dictNationService"/>
+	<!-- 职业字典-->
+	<dubbo:service interface="br.order.redis.dict.DictoccupationRedis" ref="dictoccupationRedisImpl" timeout="300000"/>
+	
+	<dubbo:reference interface="br.crm.service.dict.DictOccupationService" check="false" id="dictOccupationService"/>
+	<!--支付方式字典-->
+	<dubbo:service interface="br.order.redis.dict.DictpaywayRedis" ref="dictpaywayRedisImpl" timeout="300000"/>
+	
+	<dubbo:reference interface="br.crm.service.dict.DictpaywayService" check="false" id="dictpaywayService"/>
+	<!--发票类型字典-->
+	<dubbo:service interface="br.order.redis.dict.DictreceipttypeRedis" ref="dictreceipttypeRedisImpl" timeout="300000"/>
+	
+	<dubbo:reference interface="br.crm.service.dict.DictreceipttypeService" check="false" id="dictreceipttypeService"/>
+	<!--总检科室-->
+	<dubbo:service interface="br.order.redis.dict.DictsectionRedis" ref="dictsectionRedisImpl" timeout="300000"/>
+	
+	<dubbo:reference interface="br.crm.service.dict.DictSectionService" check="false" id="dictSectionService"/>
+	<!--性别-->
+	<dubbo:service interface="br.order.redis.dict.DictsexRedis" ref="dictsexRedisImpl" timeout="300000"/>
+	
+	<dubbo:reference interface="br.crm.service.dict.DictsexService" check="false" id="dictsexService"/>
+	<!-- 人际关系字典表 -->
+	<dubbo:service interface="br.order.redis.dict.DictRelationshipRedis" ref="dictRelationshipRedisImpl" timeout="300000"/>
+	
+	<dubbo:reference interface="br.order.user.service.dict.DictRelationshipService" check="false" id="dictRelationshipService"/>
+	<!--收费项redis缓存-->
+	<dubbo:service interface="br.order.redis.examfeeitem.OrgExamFeeItemRedis" ref="orgExamFeeItemRedis" timeout="300000"/>
+	
+	<dubbo:reference interface="br.crm.service.orgexamfeeitem.OrgExamFeeItemService" check="false" id="orgExamFeeItemService"/>
+	<!--门店-->
+	<dubbo:service interface="br.order.redis.branch.OrgBranchRedis" ref="orgBranchRedisImpl" timeout="300000"/>
+	
+	<dubbo:reference interface="br.crm.service.branch.OrgBranchService" check="false" id="orgBranchService"/>
+	<!--门店-->
+	<dubbo:service interface="br.order.redis.branch.OrgBranchImgRedis" ref="orgBranchImgRedisImpl" timeout="300000"/>
+	
+	<dubbo:reference interface="br.crm.service.branch.OrgBranchImgService" check="false" id="orgBranchImgService"/>
+	<!--门店休息日-->
+	<dubbo:service interface="br.order.redis.branch.OrgBranchRestRedis" ref="orgBranchRestRedisImpl" timeout="300000"/>
+	
+	<dubbo:reference interface="br.crm.service.branch.OrgRestService" check="false" id="orgRestService"/>
+	<!--门店科室-->
+	<dubbo:service interface="br.order.redis.dept.OrgDeptRedis" ref="orgDeptRedisImpl" timeout="300000"/>
+	
+	<dubbo:reference interface="br.crm.service.dept.OrgDeptService" check="false" id="orgDeptService"/>
+	<!--医生-->
+	<dubbo:service interface="br.order.redis.user.OrgUserRedis" ref="orgUserRedisImpl" timeout="300000"/>
+	
+	<dubbo:reference interface="br.crm.service.permission.OrganizationUserService" check="false" id="organizationUserService"/>
+	<!--医生绑定检查项-->
+	<dubbo:service interface="br.order.redis.examitem.OrgExamItemUserRedis" ref="orgExamItemUserRedisImpl" timeout="300000"/>
+	
+	<dubbo:reference interface="br.crm.service.examitem.OrgExamItemUserService" check="false" id="orgExamItemUserService"/>
+
+	<!-- 门店绑定套餐 -->
+	<dubbo:service interface="br.order.redis.suite.OrgBranchSuiteRedis" ref="orgBranchSuiteRedis" timeout="300000"/>
+	
+	<dubbo:reference interface="br.crm.service.suite.OrgBranchSuiteService" check="false" id="orgBranchSuiteService"/>
+	<!-- 套餐绑定收费项 -->
+	<dubbo:service interface="br.order.redis.suite.OrgExamFeeItemSuiteRedis" ref="orgExamFeeItemSuiteRedis" timeout="300000"/>
+	
+	<dubbo:reference interface="br.crm.service.suite.OrgExamFeeItemSuiteService" check="false" id="orgExamFeeItemSuiteService"/>
+	<!-- 结论词redis缓存 -->
+	<dubbo:service interface="br.order.redis.dict.DictConclusionRedis" ref="dictConclusionRedis" timeout="300000"/>
+	
+	<dubbo:reference interface="br.crm.service.dict.DictConclusionService" check="false" id="dictConclusionService"/>
+	<!--  套餐redis缓存-->
+	<dubbo:service interface="br.order.redis.suite.OrgExamSuiteRedis" ref="orgExamSuiteRedis" timeout="300000"/>
+	
+	<dubbo:reference interface="br.crm.service.suite.OrgExamSuiteService" check="false" id="orgExamSuiteService"/>
+	
+	<!--  套餐类型缓存-->
+	<dubbo:service interface="br.order.redis.suite.OrgExamSuiteTypeRedis" ref="orgExamSuiteTypeRedis" timeout="300000"/>
+	
+	<dubbo:reference interface="br.crm.service.suite.OrgExamSuiteTypeService" check="false" id="orgExamSuiteTypeService"/>
+	<!--  套餐高发疾病缓存-->
+	<dubbo:service interface="br.order.redis.suite.OrgExamSuiteHidRedis" ref="orgExamSuiteHidRedis" timeout="300000"/>
+	<dubbo:reference interface="br.crm.service.suite.OrgExamSuiteHidService" check="false" id="orgExamSuiteHidService"/>
+	<!--  套餐图片缓存-->
+	<dubbo:service interface="br.order.redis.suite.OrgExamSuiteImgRedis" ref="orgExamSuiteImgRedis" timeout="300000"/>
+	
+	<dubbo:reference interface="br.crm.service.suite.OrgExamSuiteImgService" check="false" id="orgExamSuiteImgService"/>
+	<!--  检查项类型-->
+	<dubbo:service interface="br.order.redis.examitem.OrgExamItemTypeRedis" ref="orgExamItemTypeRedis" timeout="300000"/>
+	
+	<dubbo:reference interface="br.crm.service.examitem.OrgExamItemTypeService" check="false" id="orgExamItemTypeService"/>
+	<!--收费项绑定检查项医生表-->
+	<dubbo:service interface="br.order.redis.examfeeitem.OrgExamFeeItemDetailRedis" ref="orgExamFeeItemDetailRedis" timeout="300000"/>
+	
+	<dubbo:reference interface="br.crm.service.orgexamfeeitem.OrgExamFeeItemDetailService" check="false" id="orgExamFeeItemDetailService"/>
+	<!--结论词科室类型redis缓存  -->
+	<dubbo:service interface="br.order.redis.dict.DictConclusionDeptTypeRedis" ref="dictConclusionDeptTypeRedis" timeout="300000"/>
+	
+	<dubbo:reference interface="br.crm.service.dict.DictConclusionDeptTypeService" check="false" id="dictConclusionDeptTypeService"/>
+	<!-- 结论词分组 redis缓存-->
+	<dubbo:service interface="br.order.redis.dict.DictconclusionGroupRedis" ref="dictconclusionGroupRedis" timeout="300000"/>
+	
+	<dubbo:reference interface="br.crm.service.dict.DictconclusionGroupService" check="false" id="dictconclusionGroupService"/>
+	<!-- 结论词结果 redis缓存-->
+	<dubbo:service interface="br.order.redis.dict.DictConclusionResultClassRedis" ref="dictConclusionResultClassRedis" timeout="300000"/>
+	
+	<dubbo:reference interface="br.crm.service.dict.DictConclusionResultClassService" check="false" id="dictConclusionResultClassService"/>
+	<!-- 订单购物车中间表 -->
+	<dubbo:reference interface="br.crm.service.customer.order.CustomerOrderCartService" check="false" id="customerOrderCartService"/>
+	
+</beans>
